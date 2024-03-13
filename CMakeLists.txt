@@ -16,23 +16,27 @@ set(PROJECT_SOURCES
     src/inv_case.hpp
     src/com_header.h
     src/pcl_visual.hpp
+    src/algo_visual.hpp
 )
 
 find_package(Eigen3 REQUIRED)
-find_package(VTK CONFIG REQUIRED)
+# find_package(VTK CONFIG REQUIRED)
 find_package(PCL CONFIG REQUIRED io visualization)
 find_package(spdlog CONFIG REQUIRED)
+find_package(Matplot++ CONFIG REQUIRED)
 
 add_executable(eigen_case ${PROJECT_SOURCES})
 
 target_link_libraries(eigen_case 
     Eigen3::Eigen
-    ${VTK_LIBRARIES}
+    # ${VTK_LIBRARIES}
     ${PCL_LIBRARIES}
     spdlog::spdlog
+    Matplot++::cimg  
+    Matplot++::matplot
 )
 
-vtk_module_autoinit(
-    TARGETS ${PROJECT_NAME}
-    MODULES ${VTK_LIBRARIES}
-)
+# vtk_module_autoinit(
+#     TARGETS ${PROJECT_NAME}
+#     MODULES ${VTK_LIBRARIES}
+# )

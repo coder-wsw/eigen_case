@@ -1,7 +1,7 @@
 {
     "cmake.configureSettings": {
         "ENABLE_STATIC_MSVCRT": "ON",
-        "CMAKE_TOOLCHAIN_FILE": "D:/vcpkg/scripts/buildsystems/vcpkg.cmake",
+        "CMAKE_TOOLCHAIN_FILE": "D:/MyVcpkg/vcpkg/scripts/buildsystems/vcpkg.cmake",
         "VCPKG_TARGET_TRIPLET": "x64-windows-static",
     },
     "cmake.generator": "Ninja",
@@ -90,6 +90,8 @@
         "xtree": "cpp",
         "xutility": "cpp",
         "source_location": "cpp",
-        "typeindex": "cpp"
+        "typeindex": "cpp",
+        "core": "cpp",
+        "random": "cpp"
     }
 }

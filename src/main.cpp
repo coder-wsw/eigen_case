@@ -1,6 +1,8 @@
+#include "algo_visual.hpp"
 #include "gen_coord.hpp"
 #include "inv_case.hpp"
 #include "pcl_visual.hpp"
+
 
 void print(int a, int b)
 {
@@ -11,6 +13,7 @@ int main(int, char*[])
 {
     Run(0, print, 1, 2);
     Run(0, inv_case);
-    Run(1, gen_coord_example);
-    Run(1, pcl_visual);
+    Run(0, gen_coord_example);
+    Run(0, pcl_visual);
+    Run(1, algo_visual);
 }
