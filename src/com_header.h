@@ -19,11 +19,13 @@ namespace mp = matplot;
         SPDLOG_INFO("{}:\n{}", #msg, buf1.str());                              \
     }
 
-#define Debug(msg)                                                             \
+#define Debug_Vec(vec)                                                         \
     {                                                                          \
-        std::stringstream buf1;                                                \
-        buf1 << msg;                                                           \
-        SPDLOG_INFO("{}:\n{}", #msg, buf1.str());                              \
+        std::string delimiter = ",";                                           \
+        std::stringstream str;                                                 \
+        std::copy(vec.begin(), vec.end(),                                      \
+                  std::ostream_iterator<double>(str, delimiter.c_str()));      \
+        SPDLOG_INFO("{}:{},[{}]", #vec, vec.size(), str.str());                \
     }
 
 #define Run(val, func, ...)                                                    \
