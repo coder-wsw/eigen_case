@@ -58,6 +58,19 @@ public:
                          1.0, false, z_axis_str.str());
     }
 
+    void visual_point(std::vector<Point>& p, int id)
+    {
+        for (int i = 0; i < p.size(); i++) {
+            std::stringstream ss;
+            ss << "point" << id << i;
+            double r = i == 0 ? 1.0 : 0.0;
+            double g = i == 1 ? 1.0 : 0.0;
+            double b = i == 2 ? 1.0 : 0.0;
+            viewer->addSphere(pcl::PointXYZ(p[i].x, p[i].y, p[i].z), 0.03, r, g,
+                              b, ss.str());
+        }
+    }
+
     void run()
     {
         while (!viewer->wasStopped()) {
@@ -80,9 +93,13 @@ void pcl_visual()
     a_vec.push_back(Point{1, 0, 0});
     a_vec.push_back(Point{0, 0, 1});
 
+    viewer.visual_point(a_vec, 0);
+
     b_vec.push_back(Point{1, 1, 1});
     b_vec.push_back(Point{2, 1, 1});
     b_vec.push_back(Point{1, 1, 2});
+
+    viewer.visual_point(b_vec, 1);
 
     Eigen::Matrix4f a_coord;
     gen_coord_system(a_vec, a_coord);
