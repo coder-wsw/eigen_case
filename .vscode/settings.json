@@ -92,6 +92,8 @@
         "source_location": "cpp",
         "typeindex": "cpp",
         "core": "cpp",
-        "random": "cpp"
+        "random": "cpp",
+        "cwctype": "cpp",
+        "codecvt": "cpp"
     }
 }

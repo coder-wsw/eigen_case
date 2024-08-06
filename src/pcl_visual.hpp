@@ -1,13 +1,20 @@
+#pragma once
 #include "com_header.h"
+#include "gen_coord.hpp"
+#include "load_file.hpp"
 
 class Viewer {
 public:
     Viewer()
     {
+        // 9, 89, 131
+        // 14 140 207
+        // 6 70 105
         viewer = new pcl::visualization::PCLVisualizer("viewer");
-        viewer->setBackgroundColor(0, 0, 0);
-        // viewer.addCoordinateSystem(0.5);
-        viewer->setCameraPosition(4, 0, 4, 0, 0, 0, 0, 0, 1);
+        double r = 6 / 255.0;
+        double g = 70 / 255.0;
+        double b = 105 / 255.0;
+        viewer->setBackgroundColor(r, g, b);
     }
     ~Viewer()
     {
@@ -46,16 +53,36 @@ public:
                                        x_axis[2] + origin[2]),
                          pcl::PointXYZ(origin[0], origin[1], origin[2]), 1.0, 0,
                          0, false, x_axis_str.str());
+
+        viewer->addText3D("x" + std::to_string(id),
+                          pcl::PointXYZ(x_axis[0] + origin[0],
+                                        x_axis[1] + origin[1],
+                                        x_axis[2] + origin[2]),
+                          0.05, 1.0, 0.0, 0.0, "x_text" + std::to_string(id));
+
         viewer->addArrow(pcl::PointXYZ(y_axis[0] + origin[0],
                                        y_axis[1] + origin[1],
                                        y_axis[2] + origin[2]),
                          pcl::PointXYZ(origin[0], origin[1], origin[2]), 0, 1.0,
                          0, false, y_axis_str.str());
+
+        viewer->addText3D("y" + std::to_string(id),
+                          pcl::PointXYZ(y_axis[0] + origin[0],
+                                        y_axis[1] + origin[1],
+                                        y_axis[2] + origin[2]),
+                          0.05, 0.0, 1.0, 0.0, "y_text" + std::to_string(id));
+
         viewer->addArrow(pcl::PointXYZ(z_axis[0] + origin[0],
                                        z_axis[1] + origin[1],
                                        z_axis[2] + origin[2]),
                          pcl::PointXYZ(origin[0], origin[1], origin[2]), 0, 0,
                          1.0, false, z_axis_str.str());
+
+        viewer->addText3D("z" + std::to_string(id),
+                          pcl::PointXYZ(z_axis[0] + origin[0],
+                                        z_axis[1] + origin[1],
+                                        z_axis[2] + origin[2]),
+                          0.05, 0.0, 0.0, 1.0, "z_text" + std::to_string(id));
     }
 
     void visual_point(std::vector<Point>& p, int id)
@@ -69,6 +96,50 @@ public:
             viewer->addSphere(pcl::PointXYZ(p[i].x, p[i].y, p[i].z), 0.03, r, g,
                               b, ss.str());
         }
+    }
+
+    void show_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr& cloud, int id)
+    {
+        spdlog::info("cloud size: {}", cloud->size());
+
+        int r = 250;
+        int g = 250;
+        int b = 250;
+
+        pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> color(
+            cloud, r, g, b);
+
+        viewer->addPointCloud(cloud, color, "cloud" + std::to_string(id));
+        viewer->spin();
+        viewer->removePointCloud("cloud" + std::to_string(id));
+        viewer->removePointCloud("feature" + std::to_string(id));
+    }
+
+    void show_feature(pcl::PointCloud<pcl::PointXYZ>::Ptr& feature, int id)
+    {
+        spdlog::info("feature size: {}", feature->size());
+
+        int r = 255;
+        int g = 102;
+        int b = 102;
+
+        pcl::visualization::PointCloudColorHandlerGenericField<pcl::PointXYZ>
+            color(feature, "z");
+
+        // pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ>
+        // color(
+        //     feature, r, g, b);
+
+        viewer->addPointCloud(feature, color, "feature" + std::to_string(id));
+
+        viewer->setPointCloudRenderingProperties(
+            pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 8,
+            "feature" + std::to_string(id));
+    }
+
+    void spin()
+    {
+        viewer->spin();
     }
 
     void run()
@@ -110,4 +181,32 @@ void pcl_visual()
     viewer.visual_coord(b_coord, 1);
 
     viewer.run();
+};
+
+void visual_from_file()
+{
+    Viewer viewer;
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud1(
+        new pcl::PointCloud<pcl::PointXYZ>());
+
+    pcl::PointCloud<pcl::PointXYZ>::Ptr feature1(
+        new pcl::PointCloud<pcl::PointXYZ>());
+
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud2(
+        new pcl::PointCloud<pcl::PointXYZ>());
+    LoadCSVFile("D:/personalSpace/self_create/cpp_space/eigen_case/dataset/"
+                "2022-06-09-10-09-44_cloud.csv",
+                cloud1, 0);
+
+    LoadCSVFile("D:/personalSpace/self_create/cpp_space/eigen_case/dataset/"
+                "2022-06-09-10-09-44_feature.csv",
+                feature1, 1);
+
+    LoadCSVFile("D:/personalSpace/self_create/cpp_space/eigen_case/dataset/"
+                "2023-12-07-11-10-15_cloud.csv",
+                cloud2, 0);
+
+    viewer.show_feature(feature1, 0);
+    viewer.show_cloud(cloud1, 0);
+    // viewer.show_cloud(cloud2, 1);
 }

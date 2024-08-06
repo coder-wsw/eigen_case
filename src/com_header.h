@@ -6,6 +6,7 @@
 #include <cmath>
 #include <iostream>
 #include <matplot/matplot.h>
+#include <opencv2/opencv.hpp>
 #include <pcl/visualization/pcl_visualizer.h>
 #include <random>
 #include <spdlog/spdlog.h>

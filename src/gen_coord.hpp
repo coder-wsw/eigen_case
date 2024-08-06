@@ -1,3 +1,4 @@
+#pragma once
 #include "com_header.h"
 
 struct Point

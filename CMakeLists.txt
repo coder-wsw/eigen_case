@@ -11,26 +11,34 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 set(PROJECT_SOURCES 
+    # src/algorithms/*.hpp
+    src/csv.h
     src/main.cpp
     src/gen_coord.hpp
     src/inv_case.hpp
     src/com_header.h
     src/pcl_visual.hpp
     src/algo_visual.hpp
+    src/load_file.hpp
 )
 
+find_path(RAPIDCSV_INCLUDE_DIRS "rapidcsv.h")
 find_package(Eigen3 REQUIRED)
 # find_package(VTK CONFIG REQUIRED)
 find_package(PCL CONFIG REQUIRED io visualization)
+find_package(OpenCV CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 find_package(Matplot++ CONFIG REQUIRED)
 
 add_executable(eigen_case ${PROJECT_SOURCES})
 
+target_include_directories(eigen_case PRIVATE ${RAPIDCSV_INCLUDE_DIRS})
+
 target_link_libraries(eigen_case 
     Eigen3::Eigen
     # ${VTK_LIBRARIES}
     ${PCL_LIBRARIES}
+    ${OpenCV_LIBS}
     spdlog::spdlog
     Matplot++::cimg  
     Matplot++::matplot

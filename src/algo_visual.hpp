@@ -1,4 +1,19 @@
+#pragma once
 #include "com_header.h"
+#include "gen_coord.hpp"
+#include "pcl_visual.hpp"
+
+/// 旋转顺序枚举
+enum class RotationOrder
+{
+    XYZ,
+    XZY,
+    YXZ,
+    YZX,
+    ZXY,
+    ZYX,
+    ZYZ,
+};
 
 Eigen::VectorXd rande(int num, int range)
 {
@@ -214,6 +229,148 @@ void least_square_plane()
     mp::show();
 }
 
+Eigen::Vector3f pointProjectToLine(const Eigen::Vector3f& p,
+                                   const Eigen::Vector3f& lp,
+                                   const Eigen::Vector3f& ld)
+{
+    Eigen::Vector3f projected;
+    float k;
+    k = ld.dot(p - lp);
+    projected = lp + k / ld.dot(ld) * ld;
+
+    Debug(projected);
+
+    return projected;
+}
+
+Eigen::Matrix4f createCoordinate(const Eigen::Vector3f& p1,
+                                 const Eigen::Vector3f& p2,
+                                 const Eigen::Vector3f& p3)
+{
+    Eigen::Vector3f vx = p2 - p1;
+    Eigen::Vector3f vz = vx.cross(p3 - p1);
+    Eigen::Vector3f vy;
+    Eigen::Vector3f origin;
+    Eigen::Matrix4f translation;
+    translation.setIdentity();
+    vx = vx.normalized();
+    vz = vz.normalized();
+    vy = vz.cross(vx);
+
+    origin = pointProjectToLine(p3, p1, vx);
+    translation.block<3, 4>(0, 0) << vx, vy, vz, origin;
+
+    Debug(translation);
+
+    return translation;
+}
+
+/// 欧拉角转换矩阵
+Eigen::Matrix3f euler2matrix(const Eigen::Vector3f& euler, RotationOrder type)
+{
+    Eigen::Matrix3f R;
+    Eigen::Vector3f angle = euler * M_PI / 180;
+
+    switch (type) {
+    case RotationOrder::XYZ:
+        R = Eigen::AngleAxisf(angle[0], Eigen::Vector3f::UnitX()) *
+            Eigen::AngleAxisf(angle[1], Eigen::Vector3f::UnitY()) *
+            Eigen::AngleAxisf(angle[2], Eigen::Vector3f::UnitZ());
+        break;
+    case RotationOrder::XZY:
+        R = Eigen::AngleAxisf(angle[0], Eigen::Vector3f::UnitX()) *
+            Eigen::AngleAxisf(angle[1], Eigen::Vector3f::UnitZ()) *
+            Eigen::AngleAxisf(angle[2], Eigen::Vector3f::UnitY());
+        break;
+    case RotationOrder::YXZ:
+        R = Eigen::AngleAxisf(angle[0], Eigen::Vector3f::UnitY()) *
+            Eigen::AngleAxisf(angle[1], Eigen::Vector3f::UnitX()) *
+            Eigen::AngleAxisf(angle[2], Eigen::Vector3f::UnitZ());
+        break;
+    case RotationOrder::YZX:
+        R = Eigen::AngleAxisf(angle[0], Eigen::Vector3f::UnitY()) *
+            Eigen::AngleAxisf(angle[1], Eigen::Vector3f::UnitZ()) *
+            Eigen::AngleAxisf(angle[2], Eigen::Vector3f::UnitX());
+        break;
+    case RotationOrder::ZXY:
+        R = Eigen::AngleAxisf(angle[0], Eigen::Vector3f::UnitZ()) *
+            Eigen::AngleAxisf(angle[1], Eigen::Vector3f::UnitX()) *
+            Eigen::AngleAxisf(angle[2], Eigen::Vector3f::UnitY());
+        break;
+    case RotationOrder::ZYX:
+        R = Eigen::AngleAxisf(angle[0], Eigen::Vector3f::UnitZ()) *
+            Eigen::AngleAxisf(angle[1], Eigen::Vector3f::UnitY()) *
+            Eigen::AngleAxisf(angle[2], Eigen::Vector3f::UnitX());
+        break;
+    case RotationOrder::ZYZ:
+        R = Eigen::AngleAxisf(angle[0], Eigen::Vector3f::UnitZ()) *
+            Eigen::AngleAxisf(angle[1], Eigen::Vector3f::UnitY()) *
+            Eigen::AngleAxisf(angle[2], Eigen::Vector3f::UnitZ());
+        break;
+    default:
+        break;
+    }
+
+    Debug(R);
+    return R;
+}
+
+/// 旋转矩阵转换欧拉角
+Eigen::Vector3f matrix2euler(const Eigen::Matrix3f& R, RotationOrder type)
+{
+    Eigen::Vector3f euler;
+    Eigen::Vector3f out;
+    switch (type) {
+    case RotationOrder::XYZ:
+        euler = R.eulerAngles(0, 1, 2);
+        out[0] = euler[0] * 180 / M_PI;
+        out[1] = euler[1] * 180 / M_PI;
+        out[2] = euler[2] * 180 / M_PI;
+        break;
+    case RotationOrder::XZY:
+        euler = R.eulerAngles(0, 2, 1);
+        out[0] = euler[0] * 180 / M_PI;
+        out[1] = euler[1] * 180 / M_PI;
+        out[2] = euler[2] * 180 / M_PI;
+        break;
+    case RotationOrder::YXZ:
+        euler = R.eulerAngles(1, 0, 2);
+        out[0] = euler[0] * 180 / M_PI;
+        out[1] = euler[1] * 180 / M_PI;
+        out[2] = euler[2] * 180 / M_PI;
+        break;
+    case RotationOrder::YZX:
+        euler = R.eulerAngles(1, 2, 0);
+        out[0] = euler[0] * 180 / M_PI;
+        out[1] = euler[1] * 180 / M_PI;
+        out[2] = euler[2] * 180 / M_PI;
+        break;
+    case RotationOrder::ZXY:
+        euler = R.eulerAngles(2, 0, 1);
+        out[0] = euler[0] * 180 / M_PI;
+        out[1] = euler[1] * 180 / M_PI;
+        out[2] = euler[2] * 180 / M_PI;
+        break;
+    case RotationOrder::ZYX:
+        euler = R.eulerAngles(2, 1, 0);
+        out[0] = euler[0] * 180 / M_PI;
+        out[1] = euler[1] * 180 / M_PI;
+        out[2] = euler[2] * 180 / M_PI;
+        break;
+    case RotationOrder::ZYZ:
+        euler = R.eulerAngles(2, 1, 2);
+        out[0] = euler[0] * 180 / M_PI;
+        out[1] = euler[1] * 180 / M_PI;
+        out[2] = euler[2] * 180 / M_PI;
+        break;
+    default:
+        break;
+    }
+
+    Debug(out);
+    return out;
+}
+
 auto to_std_vector(Eigen::VectorXd vec)
 {
     std::vector<double> vec_std(vec.data(), vec.data() + vec.size());
@@ -226,7 +383,27 @@ void algo_visual()
     // auto x = to_std_vector(vec);
     // std::vector<double> x = mp::randn(5000, 5, 2);
 
+    Viewer viewer;
     Run(0, least_square_line);
-    Run(1, least_square_curve, 10);
+    Run(0, least_square_curve, 10);
     Run(0, least_square_plane);
+
+    Eigen::Vector3f euler{30, 45, 60};
+    Eigen::Matrix3f out_mat = euler2matrix(euler, RotationOrder::ZYX);
+    Eigen::Matrix4f coord;
+    coord.setIdentity();
+    viewer.visual_coord(coord, 0);
+    coord.block<3, 3>(0, 0) = out_mat;
+    viewer.visual_coord(coord, 1);
+
+    // 绕x轴旋转40度
+    Eigen::Vector3f euler2{60, 0, 20};
+    Eigen::Matrix3f out_mat2 = euler2matrix(euler2, RotationOrder::ZYX);
+    out_mat = out_mat2 * out_mat;
+    coord.setIdentity();
+    coord.block<3, 3>(0, 0) = out_mat;
+    viewer.visual_coord(coord, 2);
+
+    Eigen::Vector3f out = matrix2euler(out_mat, RotationOrder::ZYX);
+    viewer.run();
 }

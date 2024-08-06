@@ -13,6 +13,7 @@ int main(int, char*[])
     Run(0, print, 1, 2);
     Run(0, inv_case);
     Run(0, gen_coord_example);
-    Run(1, pcl_visual);
+    Run(0, pcl_visual);
     Run(0, algo_visual);
+    Run(1, visual_from_file);
 }
