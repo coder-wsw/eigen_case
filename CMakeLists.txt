@@ -11,7 +11,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 set(PROJECT_SOURCES 
-    # src/algorithms/*.hpp
+    src/algorithms/features.hpp
+    src/algorithms/filters.hpp
+    src/algorithms/range_image.hpp
+    src/algorithms/keypoints.hpp
     src/csv.h
     src/main.cpp
     src/gen_coord.hpp
@@ -20,12 +23,13 @@ set(PROJECT_SOURCES
     src/pcl_visual.hpp
     src/algo_visual.hpp
     src/load_file.hpp
+    src/viewer.hpp
 )
 
 find_path(RAPIDCSV_INCLUDE_DIRS "rapidcsv.h")
 find_package(Eigen3 REQUIRED)
 # find_package(VTK CONFIG REQUIRED)
-find_package(PCL CONFIG REQUIRED io visualization)
+find_package(PCL CONFIG REQUIRED io visualization filters segmentation kdtree features keypoints)
 find_package(OpenCV CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 find_package(Matplot++ CONFIG REQUIRED)

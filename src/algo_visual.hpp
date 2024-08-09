@@ -1,7 +1,7 @@
 #pragma once
 #include "com_header.h"
 #include "gen_coord.hpp"
-#include "pcl_visual.hpp"
+// #include "pcl_visual.hpp"
 
 /// 旋转顺序枚举
 enum class RotationOrder
@@ -377,33 +377,33 @@ auto to_std_vector(Eigen::VectorXd vec)
     return vec_std;
 }
 
-void algo_visual()
-{
-    // auto vec = rande(10, 10);
-    // auto x = to_std_vector(vec);
-    // std::vector<double> x = mp::randn(5000, 5, 2);
+// void algo_visual()
+// {
+//     // auto vec = rande(10, 10);
+//     // auto x = to_std_vector(vec);
+//     // std::vector<double> x = mp::randn(5000, 5, 2);
 
-    Viewer viewer;
-    Run(0, least_square_line);
-    Run(0, least_square_curve, 10);
-    Run(0, least_square_plane);
+//     Viewer viewer;
+//     Run(0, least_square_line);
+//     Run(0, least_square_curve, 10);
+//     Run(0, least_square_plane);
 
-    Eigen::Vector3f euler{30, 45, 60};
-    Eigen::Matrix3f out_mat = euler2matrix(euler, RotationOrder::ZYX);
-    Eigen::Matrix4f coord;
-    coord.setIdentity();
-    viewer.visual_coord(coord, 0);
-    coord.block<3, 3>(0, 0) = out_mat;
-    viewer.visual_coord(coord, 1);
+//     Eigen::Vector3f euler{30, 45, 60};
+//     Eigen::Matrix3f out_mat = euler2matrix(euler, RotationOrder::ZYX);
+//     Eigen::Matrix4f coord;
+//     coord.setIdentity();
+//     viewer.visual_coord(coord, 0);
+//     coord.block<3, 3>(0, 0) = out_mat;
+//     viewer.visual_coord(coord, 1);
 
-    // 绕x轴旋转40度
-    Eigen::Vector3f euler2{60, 0, 20};
-    Eigen::Matrix3f out_mat2 = euler2matrix(euler2, RotationOrder::ZYX);
-    out_mat = out_mat2 * out_mat;
-    coord.setIdentity();
-    coord.block<3, 3>(0, 0) = out_mat;
-    viewer.visual_coord(coord, 2);
+//     // 绕x轴旋转40度
+//     Eigen::Vector3f euler2{60, 0, 20};
+//     Eigen::Matrix3f out_mat2 = euler2matrix(euler2, RotationOrder::ZYX);
+//     out_mat = out_mat2 * out_mat;
+//     coord.setIdentity();
+//     coord.block<3, 3>(0, 0) = out_mat;
+//     viewer.visual_coord(coord, 2);
 
-    Eigen::Vector3f out = matrix2euler(out_mat, RotationOrder::ZYX);
-    viewer.run();
-}
+//     Eigen::Vector3f out = matrix2euler(out_mat, RotationOrder::ZYX);
+//     viewer.run();
+// }

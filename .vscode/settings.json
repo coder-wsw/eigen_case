@@ -94,6 +94,16 @@
         "core": "cpp",
         "random": "cpp",
         "cwctype": "cpp",
-        "codecvt": "cpp"
+        "codecvt": "cpp",
+        "valarray": "cpp",
+        "*.ipp": "cpp",
+        "any": "cpp",
+        "cfenv": "cpp",
+        "coroutine": "cpp",
+        "csignal": "cpp",
+        "shared_mutex": "cpp",
+        "stdfloat": "cpp",
+        "strstream": "cpp",
+        "numericaldiff": "cpp"
     }
 }

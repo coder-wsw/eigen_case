@@ -14,6 +14,8 @@ int main(int, char*[])
     Run(0, inv_case);
     Run(0, gen_coord_example);
     Run(0, pcl_visual);
-    Run(0, algo_visual);
-    Run(1, visual_from_file);
+    // Run(0, algo_visual);
+    Run(0, filter_examples);
+    Run(0, feature_examples);
+    Run(1, range_image_examples);
 }

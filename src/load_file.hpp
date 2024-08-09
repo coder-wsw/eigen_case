@@ -32,6 +32,9 @@ void LoadCloud(const std::string& file_path, std::vector<float>& x,
 
     float x_val, y_val, z_val;
     while (in.read_row(x_val, y_val, z_val)) {
+        x_val = x_val / 100000.0f;
+        y_val = y_val / 100000.0f;
+        z_val = z_val / 100000.0f;
         x.push_back(x_val);
         y.push_back(y_val);
         z.push_back(z_val);
@@ -49,6 +52,9 @@ void LoadFeature(const std::string& file_path, std::vector<float>& x,
         dummy7;
     while (in.read_row(x_val, y_val, z_val, dummy1, dummy2, dummy3, dummy4,
                        dummy5, dummy6, dummy7)) {
+        x_val = x_val / 100000.0f;
+        y_val = y_val / 100000.0f;
+        z_val = z_val / 100000.0f;
         x.push_back(x_val);
         y.push_back(y_val);
         z.push_back(z_val);
